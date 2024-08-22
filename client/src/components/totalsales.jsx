@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import '../styles/totalSales.css'
 import {
   Chart,
   LineElement,
@@ -10,13 +11,12 @@ import {
   Legend,
 } from "chart.js";
 
-// Register Chart.js components
 Chart.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend);
-
+import ClipLoader from "react-spinners/ClipLoader";
 const TotalSalesChart = () => {
-  const chartRef = useRef(null); // Ref for the canvas element
-  const [chart, setChart] = useState(null); // To store the chart instance
-  const [isChartRendered, setIsChartRendered] = useState(false); // State to track if chart is rendered
+  const chartRef = useRef(null); 
+  const [chart, setChart] = useState(null); 
+  const [isChartRendered, setIsChartRendered] = useState(false);
 
   useEffect(() => {
     axios
@@ -62,25 +62,16 @@ const TotalSalesChart = () => {
           },
         });
 
-        setChart(newChart); // Set the new chart instance
-        setIsChartRendered(true); // Indicate that the chart has been rendered
+        setChart(newChart); 
+        setIsChartRendered(true); 
       })
       .catch((error) => console.error("API Error:", error));
   }, []);
 
   return (
     <div
-      className="totalSales"
-      style={{
-        width: "97.9%",
-        height: "500px",
-        border: "2px solid lightgrey",
-        borderRadius: "10px",
-        padding: "20px",
-        marginBottom: "50px",
-        textAlign: "center",
-        boxShadow: "0 8px 30px rgba(0, 0, 0, 0.3)",
-      }}
+      className="total-sales"
+      
     >
       <canvas ref={chartRef} />
       {!chart && <p>Loading..</p>}

@@ -5,3 +5,10 @@
     font-size: 45px;
     padding-left: 5px;
   }
+
+  
+@media (max-width: 768px) {
+  .heading{
+    text-align: center;
+  }
+}

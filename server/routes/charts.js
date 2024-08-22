@@ -4,8 +4,8 @@ const connectDB = require('../db/connect_db');
 
 router.get('/total-sales', async (req, res) => {
     try {
-        const client = await connectDB(); // Wait for the connection to complete
-        const db = client.db('RQ_Analytics'); // Replace with your actual database name
+        const client = await connectDB();
+        const db = client.db('RQ_Analytics'); 
         const Order = db.collection('shopifyOrders');
         const sales = await Order.aggregate([
             {
@@ -43,7 +43,7 @@ router.get('/total-sales', async (req, res) => {
                 }
             },
             { $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 } }
-        ]).toArray(); // Ensure you call toArray to get the result set
+        ]).toArray(); 
         
         res.json(sales);
         
@@ -123,13 +123,11 @@ router.get('/sales-growth-rate', async (req, res) => {
 });
 
 
-
-// 3. New Customers Added Over Time
 router.get('/new-customers', async (req, res) => {
     try {
-        const client = await connectDB(); // Wait for the connection to complete
-        const db = client.db('RQ_Analytics'); // Replace with your actual database name
-        const Customer = db.collection('shopifyCustomers'); // Ensure the correct collection name
+        const client = await connectDB(); 
+        const db = client.db('RQ_Analytics'); 
+        const Customer = db.collection('shopifyCustomers');
 
         const newCustomers = await Customer.aggregate([
             {   
@@ -146,7 +144,7 @@ router.get('/new-customers', async (req, res) => {
                         month: { $month: "$created_at" },
                         day: { $dayOfMonth: "$created_at" }
                     },
-                    newCustomerIds: { $addToSet: "$id" } // Collect unique customer IDs
+                    newCustomerIds: { $addToSet: "$id" }
                 }
             },
             {
@@ -155,10 +153,10 @@ router.get('/new-customers', async (req, res) => {
                     year: "$_id.year",
                     month: "$_id.month",
                     day: "$_id.day",
-                    count: { $size: "$newCustomerIds" } // Count the number of unique customers
+                    count: { $size: "$newCustomerIds" } 
                 }
             },
-            { $sort: { year: 1, month: 1, day: 1 } } // Sort by date
+            { $sort: { year: 1, month: 1, day: 1 } } 
         ]).toArray();
 
         res.json(newCustomers);
@@ -175,7 +173,6 @@ router.get('/repeated-customers', async (req, res) => {
         const db = client.db('RQ_Analytics');
         const orders = db.collection('shopifyOrders');
 
-        // Aggregate data
         const [dailyData, monthlyData, quarterlyData, yearlyData] = await Promise.all([
             orders.aggregate([
                 {
@@ -269,7 +266,6 @@ router.get('/repeated-customers', async (req, res) => {
             ]).toArray()
         ]);
 
-        // Combine data
         const combinedData = {
             daily: dailyData,
             monthly: monthlyData,
@@ -284,11 +280,10 @@ router.get('/repeated-customers', async (req, res) => {
 });
 
 
-// 5. Geographical Distribution of Customers
 router.get('/customer-geography', async (req, res) => {
     try {
-        const client = await connectDB(); // Wait for the connection to complete
-        const db = client.db('RQ_Analytics'); // Replace with your actual database name
+        const client = await connectDB(); 
+        const db = client.db('RQ_Analytics'); 
         const Order = db.collection('shopifyOrders');
         const geography = await Order.aggregate([
 
@@ -314,50 +309,6 @@ router.get('/customer-geography', async (req, res) => {
     }
 });
 
-
-router.get('/cohort-lifetime-value', async (req, res) => {
-  try {
-    const client = await connectDB();
-    const db = client.db('RQ_Analytics'); // Replace with your actual database name
-    const Customers = db.collection('shopifyCustomers');
-    const Orders = db.collection('shopifyOrders');
-    console.log(await Customers.find({}).toArray());
-    console.log(await  Orders.find({}).toArray());
-    
-    // Aggregate customers and their lifetime values by cohort
-    const cohortData = await Customers.aggregate([
-      {
-        $lookup: {
-          from: 'shopifyOrders',
-          localField: 'id',
-          foreignField: 'customer_id',
-          as: 'orders'
-        }
-      },
-      {
-        $addFields: {
-          firstPurchaseMonth: {
-            $dateToString: { format: "%Y-%m", date: { $arrayElemAt: ["$orders.created_at", 0] } }
-          }
-        }
-      },
-      {
-        $group: {
-          _id: "$firstPurchaseMonth",
-          lifetimeValue: { $sum: { $sum: "$orders.total_price" } },
-          customerCount: { $sum: 1 }
-        }
-      },
-      { $sort: { _id: 1 } }
-    ]).toArray();
-
-    res.json(cohortData);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-module.exports = router;
 
 
 module.exports = router;

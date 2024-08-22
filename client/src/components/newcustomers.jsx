@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
-import Chart from "chart.js/auto"; // Import Chart.js
+import Chart from "chart.js/auto";
+import '../styles/newCustomer.css'
 import axios from "axios";
 const NewCustomersChart = () => {
   const chartRef = useRef(null);
@@ -21,7 +22,7 @@ const NewCustomersChart = () => {
 
         const ctx = chartRef.current.getContext("2d");
         const newChart = new Chart(ctx, {
-          type: "line", // You can change this to 'line' or other types
+          type: "line", 
           data: {
             labels,
             datasets: [
@@ -53,7 +54,7 @@ const NewCustomersChart = () => {
           },
         });
 
-        setChart(newChart); // Store the chart instance in the state
+        setChart(newChart); 
       })
       .catch((error) => {
         console.error("Error fetching new customers data:", error);
@@ -61,20 +62,8 @@ const NewCustomersChart = () => {
   }, []);
 
   return (
-    <div style={{
-        width: "90% ",
-        height: "400px",
-        border: "2px solid lightgrey",
-        borderRadius: "10px",
-        padding: "20px",
-        marginBottom:'50px',
-        textAlign:'center',
-        boxShadow: '0 8px 30px rgba(0, 0, 0, 0.3)',
-        marginLeft:'70px',
-        textAlignLast:'center'
-      }}>
-      <canvas ref={chartRef} />{" "}
-      {/* Canvas element where Chart.js will render the chart */}
+    <div className="new-customer">
+      <canvas ref={chartRef} />
       {chart && <p style={{ marginTop: "35px" }}>New Customers Added Over Time</p>}
       {!chart && <p>Loading...</p>}
     </div>

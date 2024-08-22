@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Chart, registerables } from "chart.js";
+import '../styles/repeatedCustomer.css'
 
 // Register Chart.js components
 Chart.register(...registerables);
@@ -61,14 +62,13 @@ const CombinedCustomerChart = () => {
 
   useEffect(() => {
     if (chartData) {
-      // Clean up any existing chart instance
       if (chartInstanceRef.current) {
         chartInstanceRef.current.destroy();
       }
 
       const ctx = chartRef.current.getContext("2d");
       chartInstanceRef.current = new Chart(ctx, {
-        type: "line",
+        type: "bar",
         data: chartData,
         options: {
           responsive: true,
@@ -91,16 +91,7 @@ const CombinedCustomerChart = () => {
   }, [chartData]);
 
   return (
-    <div   style={{
-        width: "800px",
-        height: "400px",
-        border: "2px solid lightgrey",
-        borderRadius: "10px",
-        padding: "20px",
-        marginBottom: "45px",
-        textAlign: "center",
-        boxShadow: "0 8px 30px rgba(0, 0, 0, 0.3)",
-      }}>
+    <div className="repeated-customer">
       <canvas ref={chartRef}></canvas>
       {!chartData && <p>Loading...</p>}
       {isChartRendered && <p style={{ marginTop: "35px" }}> Number of Repeat Customers</p>}
