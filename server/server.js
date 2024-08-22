@@ -7,7 +7,9 @@ app.use(cors());
 app.use(express.json());
 
 connectDB();
-
+app.get('/',(req,res)=>{
+    res.send('sales-dashboard api')
+})
 app.use('/api/charts', require('./routes/charts'));
 
 const PORT = 5000;
