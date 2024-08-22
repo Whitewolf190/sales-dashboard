@@ -1,0 +1,8 @@
+.section-1{
+    display: flex;
+    gap: 10px;
+    justify-content: space-evenly   ;
+}
+*{
+    font-family: "IBM Plex Sans", sans-serif;
+}
